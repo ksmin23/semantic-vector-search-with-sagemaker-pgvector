@@ -1,0 +1,7 @@
+boto3>=1.26.159
+dataset==1.5.2
+SQLAlchemy==2.0.19
+streamlit==1.25.0
+sagemaker==2.155.0
+pgvector==0.2.0
+psycopg2-binary==2.9.6
