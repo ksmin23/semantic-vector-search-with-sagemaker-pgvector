@@ -1,7 +1,7 @@
 
 # Semantic Vector Search Application CDK Python project!
 
-![semantic-vector-search-with-sagemaker-pgvector-arch](../semantic-vector-search-with-sagemaker-pgvector-arch.svg)
+![sagemaker-pgvector-search-arch](./sagemaker-pgvector-search-arch.svg)
 
 This is a CDK Python project that uses SageMaker and Aurora Postgresql to build a semantic vector search application.
 

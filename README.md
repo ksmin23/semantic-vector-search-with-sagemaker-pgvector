@@ -7,7 +7,7 @@ For more information, check this blog post, [Building AI-powered search in Postg
 
 The overall architecture is like this:
 
-![](./semantic-vector-search-with-sagemaker-pgvector-arch.svg)
+![semantic-vector-search-with-sagemaker-pgvector](./semantic-vector-search-with-sagemaker-pgvector.svg)
 
 ### Overall Workflow
 
