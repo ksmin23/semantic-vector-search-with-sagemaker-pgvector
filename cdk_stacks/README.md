@@ -74,20 +74,20 @@ Or, we can provision each CDK stack one at a time like this:
 ```
 (.venv) $ cdk list
 VectorSearchVpcStack
-VSSageMakerStudioStack
 VSPgVectorStack
+VSSageMakerStudioStack
 ```
 
-#### Step 2: Create SageMaker Studio
+#### Step 2: Create Aurora Postgresql cluster
 
 ```
-(.venv) $ cdk deploy --require-approval never VectorSearchVpcStack VSSageMakerStudioStack
+(.venv) $ cdk deploy --require-approval never VectorSearchVpcStack VSPgVectorStack
 ```
 
-#### Step 3: Create Aurora Postgresql cluster
+#### Step 3: Create SageMaker Studio
 
 ```
-(.venv) $ cdk deploy --require-approval never VSPgVectorStack
+(.venv) $ cdk deploy --require-approval never VSSageMakerStudioStack
 ```
 
 **Once all CDK stacks have been successfully created, proceed with the remaining steps of the [overall workflow](../README.md#overall-workflow).**

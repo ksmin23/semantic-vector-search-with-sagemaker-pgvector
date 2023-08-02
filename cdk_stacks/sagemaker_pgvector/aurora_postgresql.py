@@ -12,14 +12,14 @@ from constructs import Construct
 
 class AuroraPostgresqlStack(Stack):
 
-  def __init__(self, scope: Construct, construct_id: str, vpc, sg_sagemaker_domain, **kwargs) -> None:
+  def __init__(self, scope: Construct, construct_id: str, vpc, **kwargs) -> None:
     super().__init__(scope, construct_id, **kwargs)
 
     sg_postgresql_client = aws_ec2.SecurityGroup(self, 'PostgreSQLClientSG',
       vpc=vpc,
       allow_all_outbound=True,
       description='security group for postgresql client',
-      security_group_name='postgresql-client-sg'
+      security_group_name='vs-postgresql-client-sg'
     )
     cdk.Tags.of(sg_postgresql_client).add('Name', 'postgresql-client-sg')
 
@@ -27,14 +27,12 @@ class AuroraPostgresqlStack(Stack):
       vpc=vpc,
       allow_all_outbound=True,
       description='security group for postgresql',
-      security_group_name='postgresql-server-sg'
+      security_group_name='vs-postgresql-server-sg'
     )
     sg_postgresql_server.add_ingress_rule(peer=sg_postgresql_server, connection=aws_ec2.Port.all_tcp(),
       description='postgresql-server-sg')
     sg_postgresql_server.add_ingress_rule(peer=sg_postgresql_client, connection=aws_ec2.Port.tcp(5432),
       description='postgresql-client-sg')
-    sg_postgresql_server.add_ingress_rule(peer=sg_sagemaker_domain, connection=aws_ec2.Port.tcp(5432),
-      description='sagemaker-domain-sg')
     cdk.Tags.of(sg_postgresql_server).add('Name', 'postgresql-server-sg')
 
     rds_subnet_group = aws_rds.SubnetGroup(self, 'PostgreSQLSubnetGroup',
@@ -108,11 +106,16 @@ class AuroraPostgresqlStack(Stack):
     self.sg_rds_client = sg_postgresql_client
 
 
-    cdk.CfnOutput(self, 'DBClusterId', value=db_cluster.cluster_identifier, export_name='VectorDBClusterId')
-    cdk.CfnOutput(self, 'DBClusterEndpoint', value=db_cluster.cluster_endpoint.socket_address, export_name='VectorDBClusterEndpoint')
-    cdk.CfnOutput(self, 'DBClusterReadEndpoint', value=db_cluster.cluster_read_endpoint.socket_address, export_name='VectorDBClusterReadEndpoint')
+    cdk.CfnOutput(self, 'DBClusterId', value=db_cluster.cluster_identifier,
+                  export_name=f'{self.stack_name}-DBClusterId')
+    cdk.CfnOutput(self, 'DBClusterEndpoint', value=db_cluster.cluster_endpoint.socket_address,
+                  export_name=f'{self.stack_name}-DBClusterEndpoint')
+    cdk.CfnOutput(self, 'DBClusterReadEndpoint', value=db_cluster.cluster_read_endpoint.socket_address,
+                  export_name=f'{self.stack_name}-DBClusterReadEndpoint')
     #XXX: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_secretsmanager/README.html
     # secret_arn="arn:aws:secretsmanager:<region>:<account-id-number>:secret:<secret-name>-<random-6-characters>"
-    cdk.CfnOutput(self, 'DBSecret', value=db_cluster.secret.secret_name, export_name='VectorDBSecret')
-    cdk.CfnOutput(self, 'DBClientSecurityGroupId', value=sg_postgresql_client.security_group_id, export_name='VectorDBClientSecurityGroupId')
+    cdk.CfnOutput(self, 'DBSecret', value=db_cluster.secret.secret_name,
+                  export_name='VectorDBSecret2')
+    cdk.CfnOutput(self, 'DBClientSecurityGroupId', value=sg_postgresql_client.security_group_id,
+                  export_name=f'{self.stack_name}-DBClientSecurityGroupId')
 
